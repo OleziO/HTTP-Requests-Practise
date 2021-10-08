@@ -18,6 +18,7 @@ $(".search").click((event) => {
             <h2>${resultSearch[i]["Title"]}</h2>
             <p class="movie-type">${resultSearch[i]["Type"]}</p>
             <p class="movie-year">${resultSearch[i]["Year"]}</p>
+            <p class="hidden-id">${resultSearch[i]["imdbID"]}</p>
             <button class="btn btn-success more-details">
                 More details
             </button>
@@ -33,11 +34,12 @@ $(".search").click((event) => {
 $("body").click((event) => {
     let myRequest = new XMLHttpRequest();
     if ($(event.target).hasClass("more-details")) {
-        const MOVIE_NAME = $(event.target).parent().children().eq(1).text();
+        $(".more-details").prop('disabled', true);
+        const MOVIE_NAME = $(event.target).parent().children().eq(4).text();
 
         myRequest.open(
             "GET",
-            `http://www.omdbapi.com/?t=${MOVIE_NAME}&plot=full&apikey=1046e662`
+            `http://www.omdbapi.com/?i=${MOVIE_NAME}&plot=full&apikey=1046e662`
         );
 
         myRequest.addEventListener("load", (res) => {
@@ -58,7 +60,7 @@ $("body").click((event) => {
                ${resultSearch["Year"]} 
                ${resultSearch["Genre"]}
             </p>
-            <p>${resultSearch["Plot"]}</
+            <p>${resultSearch["Plot"]}</p>
             <p>
                 <strong>Written by: </strong>
                 ${resultSearch["Writer"]}
@@ -91,7 +93,14 @@ $("body").click((event) => {
         });
         myRequest.send();
     } else if ($(event.target).hasClass("full-info-wrapper")) {
+        $(".more-details").prop('disabled', false);
         $(".full-info-block").html("");
         $(".full-info-wrapper").fadeOut(100);
+    }
+});
+
+$(".movieName").keyup(function(event){
+    if(event.keyCode == 13){
+        $(".search").click();
     }
 });
